@@ -1,26 +1,18 @@
 <?php
 class Database {
-    private $host;
-    private $port;
-    private $db_name;
-    private $username;
-    private $password;
+    // FORZAMOS LOS DATOS DIRECTOS EN EL CÓDIGO PARA QUE VERCEL NO USE SUS VARIABLES VIEJAS
+    private $host = "db.xgmrdapzbtdyiqjdbejk.supabase.co"; 
+    private $port = "5432"; 
+    private $db_name = "postgres";
+    private $username = "postgres"; 
+    private $password = "VPFKCj6KQg8seIRc"; 
     public $conn;
-
-    public function __construct() {
-        // Leemos las variables exactas que tienes en tu panel de Vercel
-        $this->host = getenv('DB_HOST');
-        $this->port = getenv('DB_PORT');
-        $this->db_name = getenv('DB_NAME');
-        $this->username = getenv('DB_USER');
-        $this->password = getenv('DB_PASSWORD');
-    }
 
     public function getConnection() {
         $this->conn = null;
 
         try {
-            // Conexión PDO limpia usando tus variables configuradas
+            // Conexión PDO directa e inmune a fallos de caché
             $this->conn = new PDO(
                 "pgsql:host=" . $this->host . ";port=" . $this->port . ";dbname=" . $this->db_name, 
                 $this->username, 
