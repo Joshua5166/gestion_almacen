@@ -1,6 +1,6 @@
 <?php
 // Incluimos los archivos necesarios para trabajar con la BD y el Modelo
-require_once '../config/database.php';
+require_once 'config/database.php';
 require_once 'models/Usuario.php';
 
 class AuthController {
