@@ -2,7 +2,7 @@
 // 1. Iniciar sesión para mantener el control de acceso y roles
 session_start();
 
-// 2. Incluir el archivo de conexión a la base de datos que creamos antes
+// 2. Incluir el archivo de conexión a la base de datos (Ruta raíz original)
 require_once 'config/database.php';
 
 // 3. Capturar el controlador y la acción desde la URL (por método GET)
@@ -54,13 +54,13 @@ switch ($controller) {
         } elseif ($action == 'nuevo') {
             $inventarioController->nuevo(); 
         } elseif ($action == 'guardar') {
-            $inventarioController->guardar(); // <--- Agregamos Guardar
+            $inventarioController->guardar();
         } elseif ($action == 'editar') {
-            $inventarioController->editar(); // <--- Agregamos Editar
+            $inventarioController->editar();
         } elseif ($action == 'actualizar') {
-            $inventarioController->actualizar(); // <--- Agregamos Actualizar
+            $inventarioController->actualizar();
         } elseif ($action == 'eliminar') {
-            $inventarioController->eliminar(); // <--- Agregamos Eliminar
+            $inventarioController->eliminar();
         } else {
             echo "Acción no válida en inventario.";
         }
