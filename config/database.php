@@ -1,17 +1,26 @@
 <?php
 class Database {
-    private $host = "aws-0-us-east-1.pooler.supabase.com";
-    private $port = "5432"; // <-- FORZAMOS EL PUERTO DIRECTO
-    private $db_name = "postgres";
-    private $username = "postgres.xgmrdapzbtdyiqjdbejk"; // <-- Tu usuario completo del pooler modo session
-    private $password = "VPFKCj6KQg8seIRc"; // <-- Pega aquí tu contraseña real de Supabase sin llaves ni corchetes
+    private $host;
+    private $port;
+    private $db_name;
+    private $username;
+    private $password;
     public $conn;
+
+    public function __construct() {
+        // Leemos las variables exactas que tienes en tu panel de Vercel
+        $this->host = getenv('DB_HOST');
+        $this->port = getenv('DB_PORT');
+        $this->db_name = getenv('DB_NAME');
+        $this->username = getenv('DB_USER');
+        $this->password = getenv('DB_PASSWORD');
+    }
 
     public function getConnection() {
         $this->conn = null;
 
         try {
-            // Conexión directa por PDO usando los datos limpios
+            // Conexión PDO limpia usando tus variables configuradas
             $this->conn = new PDO(
                 "pgsql:host=" . $this->host . ";port=" . $this->port . ";dbname=" . $this->db_name, 
                 $this->username, 
