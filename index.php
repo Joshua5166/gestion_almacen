@@ -3,7 +3,7 @@
 session_start();
 
 // 2. Incluir el archivo de conexión a la base de datos que creamos antes
-require_once '../config/database.php';
+require_once 'config/database.php';
 
 // 3. Capturar el controlador y la acción desde la URL (por método GET)
 // Si no hay ninguno, por defecto mandamos al usuario al login
