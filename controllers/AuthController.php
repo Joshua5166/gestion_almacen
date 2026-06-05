@@ -1,7 +1,7 @@
 <?php
-// Incluimos los archivos necesarios para trabajar con la BD y el Modelo
-require_once 'config/database.php';
-require_once 'models/Usuario.php';
+// 1. IMPORTANTE: Eliminamos 'config/database.php' porque el index.php de la raíz ya lo incluye de forma global.
+// 2. Cargamos el modelo usando la constante absoluta ROOT_PATH para que no falle en Vercel
+require_once __DIR__ . '/../models/Usuario.php';
 
 class AuthController {
     
@@ -10,7 +10,7 @@ class AuthController {
             $correo = $_POST['correo'];
             $password = $_POST['password'];
 
-            // 1. Instanciamos la conexión a la Base de Datos
+            // 1. Instanciamos la conexión a la Base de Datos (Ya disponible globalmente)
             $database = new Database();
             $db = $database->getConnection();
 
@@ -34,8 +34,8 @@ class AuthController {
             }
         }
         
-        // Cargar la interfaz gráfica del login
-        require_once 'views/login.php';
+        // Cargar la interfaz gráfica del login usando ruta segura relativa a este archivo
+        require_once __DIR__ . '/../views/login.php';
     }
 
     public function logout() {
