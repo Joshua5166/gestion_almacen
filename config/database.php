@@ -1,33 +1,39 @@
 <?php
 class Database {
-    private $host;
-    private $port;
-    private $db_name;
-    private $username;
-    private $password;
-    public $conn;
-
-    public function __construct() {
-        // Vercel inyectará estas variables automáticamente en producción.
-        $this->host = getenv('DB_HOST') ?: 'localhost';
-        $this->port = getenv('DB_PORT') ?: '5432';
-        $this->db_name = getenv('DB_NAME') ?: 'postgres';
-        $this->username = getenv('DB_USER') ?: 'postgres';
-        $this->password = getenv('DB_PASSWORD') ?: '';
-    }
+    private $conn;
 
     public function getConnection() {
         $this->conn = null;
+
         try {
-            // Cambiamos el DNS para usar 'pgsql' en lugar de 'mysql'
-            $dsn = "pgsql:host=" . $this->host . ";port=" . $this->port . ";dbname=" . $this->db_name;
-            
-            $this->conn = new PDO($dsn, $this->username, $this->password);
-            $this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            // Esta es la URI oficial calculada directamente con los datos de tu proyecto.
+            // REEMPLAZA únicamente lo que está dentro de las llaves por tu contraseña real (borra también las llaves {}).
+            $db_url = "postgresql://postgres.xgmrdapzbtdyiqjdbejk:{VPFKCj6KQg8seIRc}@aws-0-us-east-1.pooler.supabase.com:5432/postgres";
+
+            // Parseamos la URL de forma automática para extraer los datos limpios
+            $dbparsed = parse_url($db_url);
+
+            $host = $dbparsed["host"];
+            $port = $dbparsed["port"];
+            $user = $dbparsed["user"];
+            $pass = $dbparsed["pass"];
+            $dbname = ltrim($dbparsed["path"], "/");
+
+            // Conexión PDO optimizada para evitar los bloqueos de IPv6 de Vercel
+            $this->conn = new PDO(
+                "pgsql:host=$host;port=$port;dbname=$dbname", 
+                $user, 
+                $pass,
+                [
+                    PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+                    PDO::ATTR_PERSISTENT => false // Cierra conexiones muertas para que no se sature Supabase
+                ]
+            );
             
         } catch(PDOException $exception) {
             echo "Error de conexión: " . $exception->getMessage();
         }
+
         return $this->conn;
     }
 }
