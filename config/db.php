@@ -1,39 +1,40 @@
 <?php
 class Database {
-    private $host; 
-    private $port; 
-    private $db_name;
-    private $username; 
-    private $password; 
     public $conn;
-
-    public function __construct() {
-        // 1. Dejamos las variables base limpias de Vercel (o los fallbacks)
-        $this->host = getenv('DB_HOST') ? trim(getenv('DB_HOST')) : "aws-0-us-east-1.pooler.supabase.com";
-        $this->port = getenv('DB_PORT') ? (int)getenv('DB_PORT') : 6543;
-        $this->db_name = getenv('DB_NAME') ? trim(getenv('DB_NAME')) : "postgres";
-        $this->username = getenv('DB_USER') ? trim(getenv('DB_USER')) : "postgres"; 
-        $this->password = getenv('DB_PASSWORD') ? trim(getenv('DB_PASSWORD')) : "VPFKCj6KQg8seIRc";
-    }
 
     public function getConnection() {
         $this->conn = null;
+        
+        // 1. Intentamos leer la URI completa de la variable DATABASE_URL de Vercel
+        $db_url = getenv('DATABASE_URL');
+
         try {
-            // 2. Usamos el formato de URI para el DSN. 
-            // Esto le pasa el usuario, la contraseña, el host, el puerto y la BD en un string directo.
-            // Para el Pooler, el formato de usuario REFIERE al Tenant de forma nativa en la URL:
-            
-            $project_id = "xgmrdapzbtdyiqjdbejk"; // Tu ID de proyecto
-            
-            // Construimos el DSN usando la estructura: pgsql:host=HOST;port=PORT;dbname=DB;user=USUARIO.ID_PROYECTO;password=PASS
-            $dsn = "pgsql:host=" . $this->host . 
-                   ";port=" . $this->port . 
-                   ";dbname=" . $this->db_name . 
-                   ";user=" . $this->username . "." . $project_id . 
-                   ";password=" . $this->password; 
-            
-            // Pasamos un arreglo vacío a PDO ya que las credenciales van incrustadas de forma segura en el DSN
-            $this->conn = new PDO($dsn);
+            if ($db_url) {
+                // Si existe DATABASE_URL (en Vercel), mapeamos el formato postgres:// a pgsql:
+                // Ejemplo: postgres://user:pass@host:port/db -> pgsql:host=host;port=port;dbname=db;user=user;password=pass
+                $dbparts = parse_url($db_url);
+
+                $host = $dbparts['host'];
+                $port = $dbparts['port'] ?? 6543;
+                $dbname = ltrim($dbparts['path'], '/');
+                $username = $dbparts['user'];
+                $password = $dbparts['pass'];
+
+                $dsn = "pgsql:host=$host;port=$port;dbname=$dbname;user=$username;password=$password";
+                $this->conn = new PDO($dsn);
+            } else {
+                // 2. RESPALDO LOCAL: Si estás en localhost y no hay variable de entorno, usa el fallback tradicional
+                // IMPORTANTE: Nota cómo el host del pooler REAL lleva tu ID de proyecto al inicio si no usas el genérico
+                $host = "xgmrdapzbtdyiqjdbejk.supabase.co"; // Tu host directo tradicional
+                $port = 5432; 
+                $dbname = "postgres";
+                $username = "postgres";
+                $password = "VPFKCj6KQg8seIRc";
+
+                $dsn = "pgsql:host=$host;port=$port;dbname=$dbname";
+                $this->conn = new PDO($dsn, $username, $password);
+            }
+
             $this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             
         } catch(PDOException $exception) {
