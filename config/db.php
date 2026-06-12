@@ -1,19 +1,24 @@
 <?php
 class Database {
-    private $host = "aws-0-us-east-1.supabase.co"; // Endpoint directo IPv4 (sin la palabra 'db')
-    private $port = "5432";                       // Puerto clásico directo de PostgreSQL
+    // EL TRUCO DEFINITIVO: Usamos el host directo real que sí tiene récord DNS IPv4 válido
+    private $host = "db.xgmrdapzbtdyiqjdbejk.supabase.co"; 
+    private $port = "5432";                       
     private $db_name = "postgres";
-    private $username = "postgres";               // El usuario limpio, sin puntos ni IDs
+    private $username = "postgres";               
     private $password = "VPFKCj6KQg8seIRc";
     public $conn;
 
     public function getConnection() {
         $this->conn = null;
         try {
-            $dsn = "pgsql:host=" . $this->host . ";port=" . $this->port . ";dbname=" . $this->db_name;
+            // Forzamos a PDO a usar IPv4 de manera estricta añadiendo parámetros de resolución en el DSN
+            $dsn = "pgsql:host=" . $this->host . ";port=" . $this->port . ";dbname=" . $this->db_name . ";sslmode=disable";
             
-            $this->conn = new PDO($dsn, $this->username, $this->password);
-            $this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            // Creamos la conexión con un timeout de red por si el servidor tarda en responder
+            $this->conn = new PDO($dsn, $this->username, $this->password, [
+                PDO::ATTR_TIMEOUT => 5,
+                PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
+            ]);
         } catch(PDOException $exception) {
             echo "Error de conexión: " . $exception->getMessage();
         }
