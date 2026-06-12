@@ -10,22 +10,32 @@ class Usuario {
 
     // Método para validar las credenciales
     public function autenticar($correo, $password) {
+        // VALIDACIÓN DE SEGURIDAD: Si la conexión es nula, evitamos el crash devolviendo false
+        if ($this->conn === null) {
+            return false;
+        }
+
         // Consulta SQL preparada para evitar Inyección SQL
         $query = "SELECT id, nombre, rol, password FROM " . $this->table_name . " WHERE correo = :correo LIMIT 1";
         
-        $stmt = $this->conn->prepare($query);
-        $stmt->bindParam(':correo', $correo);
-        $stmt->execute();
+        try {
+            $stmt = $this->conn->prepare($query);
+            $stmt->bindParam(':correo', $correo);
+            $stmt->execute();
 
-        // Verificamos si se encontró el correo
-        if ($stmt->rowCount() > 0) {
-            $row = $stmt->fetch(PDO::FETCH_ASSOC);
-            
-            // Verificamos la contraseña
-            if ($password === $row['password']) {
-                // Si todo es correcto, devolvemos el arreglo con los datos del usuario
-                return $row;
+            // Verificamos si se encontró el correo
+            if ($stmt->rowCount() > 0) {
+                $row = $stmt->fetch(PDO::FETCH_ASSOC);
+                
+                // Verificamos la contraseña (comparación directa)
+                if ($password === $row['password']) {
+                    // Si todo es correcto, devolvemos el arreglo con los datos del usuario
+                    return $row;
+                }
             }
+        } catch (PDOException $e) {
+            // Si hay un error en la consulta (por ejemplo, la tabla no existe), no rompe la app
+            return false;
         }
         
         // Retorna falso si el correo no existe o la contraseña está mal
