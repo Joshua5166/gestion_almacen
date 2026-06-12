@@ -5,19 +5,37 @@ class Database {
     public function getConnection() {
         $this->conn = null;
         
-        try {
-            // Neon proporciona una URL completa. Si no existe, usamos los parámetros desglosados
-            // Copia el string de tu captura ('postgres://neondb_owner:***@ep-quiet-night...')
-            $host = "ep-quiet-night-attxplb7.c-9.us-east-1.aws.neon.tech";
-            $port = "5432";
-            $dbname = "neondb"; // Neon nombra tu base de datos inicial como 'neondb' por defecto
-            $username = "neondb_owner";
-            $password = "npg_VkrHmx5W3Ijv"; // Haz clic en 'Show password' en Neon y pégala aquí
+        // 1. Intentamos leer la URL completa de Vercel (Recomendado)
+        $db_url = getenv('DATABASE_URL');
 
-            // DSN estándar para PostgreSQL en Neon con SSL requerido obligatorio
-            $dsn = "pgsql:host=$host;port=$port;dbname=$dbname;sslmode=require";
-            
-            $this->conn = new PDO($dsn, $username, $password);
+        try {
+            if ($db_url) {
+                // Limpiamos el prefijo postgresql:// por pgsql:// para que PDO lo entienda
+                $db_url = str_replace("postgresql://", "pgsql://", $db_url);
+                
+                $dbparts = parse_url($db_url);
+
+                $host = $dbparts['host'];
+                $port = $dbparts['port'] ?? 5432;
+                $dbname = ltrim($dbparts['path'], '/');
+                $username = $dbparts['user'];
+                $password = $dbparts['pass'];
+
+                // Neon requiere sslmode=require de forma obligatoria
+                $dsn = "pgsql:host=$host;port=$port;dbname=$dbname;sslmode=require";
+                $this->conn = new PDO($dsn, $username, $password);
+            } else {
+                // 2. RESPALDO NUEVO: Si no encuentra variable de entorno, usa los datos del nuevo proyecto
+                $host = "ep-patient-sky-atucuhoo-pooler.c-9.us-east-1.aws.neon.tech";
+                $port = "5432";
+                $dbname = "neondb"; 
+                $username = "neondb_owner";
+                $password = "npg_VkrHmx5W3Ijv"; 
+
+                $dsn = "pgsql:host=$host;port=$port;dbname=$dbname;sslmode=require";
+                $this->conn = new PDO($dsn, $username, $password);
+            }
+
             $this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             
         } catch(PDOException $exception) {
