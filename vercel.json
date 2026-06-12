@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "commands": [
+  "builds": [
     { "src": "api/index.php", "use": "@vercel/php" }
   ],
   "routes": [
