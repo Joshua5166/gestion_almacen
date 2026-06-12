@@ -1,7 +1,7 @@
 <?php
 class Database {
     // EL TRUCO DEFINITIVO: Usamos el host directo real que sí tiene récord DNS IPv4 válido
-    private $host = "db.xgmrdapzbtdyiqjdbejk.supabase.co"; 
+    private $host = "44.208.221.186"; 
     private $port = "5432";                       
     private $db_name = "postgres";
     private $username = "postgres";               
