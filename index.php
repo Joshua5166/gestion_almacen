@@ -4,6 +4,9 @@ session_start();
 
 // 2. Incluir el archivo de conexión a la base de datos (Ruta raíz original)
 //require_once 'config/database.php';
+if (!defined('ROOT_PATH')) {
+    define('ROOT_PATH', __DIR__ . '/');
+}
 require_once ROOT_PATH . 'config/db.php';
 // 3. Capturar el controlador y la acción desde la URL (por método GET)
 // Si no hay ninguno, por defecto mandamos al usuario al login
