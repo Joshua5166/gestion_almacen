@@ -1,5 +1,7 @@
 <?php
-require_once '../config/db.php';
+// Usamos la ruta directa desde la raíz del proyecto. 
+// Si en tu index.php definiste ROOT_PATH, puedes usar: require_once ROOT_PATH . 'config/db.php';
+require_once 'config/db.php';
 require_once 'models/Producto.php';
 
 class DashboardController {
@@ -12,7 +14,7 @@ class DashboardController {
         $valorTotal = $productoModel->obtenerValorizacionTotal();
         $stmt_alertas = $productoModel->obtenerStockBajo();
 
-        // Cargamos la vista
+        // Cargamos la vista de forma limpia
         require_once 'views/dashboard.php';
     }
 }
