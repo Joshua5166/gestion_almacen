@@ -12,25 +12,8 @@ public function index() {
         
         $stmt_productos = $productoModel->obtenerTodos();
         
-        // --- BLOQUE DE DIAGNÓSTICO EN VIVO ---
-        $directorio_views = dirname(__DIR__) . '/views';
-        echo "<div style='background:#2c3e50; color:#fff; padding:20px; font-family:monospace; margin:20px; border-radius:8px;'>";
-        echo "<h3>[Diagnóstico Vercel] Escaneando la carpeta views:</h3>";
-        if (is_dir($directorio_views)) {
-            $archivos = scandir($directorio_views);
-            echo "<ul>";
-            foreach ($archivos as $archivo) {
-                if ($archivo !== '.' && $archivo !== '..') {
-                    echo "<li>📄 <strong>" . $archivo . "</strong></li>";
-                }
-            }
-            echo "</ul>";
-        } else {
-            echo "❌ La carpeta 'views' no existe en la ruta absoluta: " . $directorio_views;
-        }
-        echo "</div>";
-        exit(); // Detenemos la ejecución aquí para leer el diagnóstico
-        // --------------------------------------
+        // Apuntamos directo al nombre real detectado por el escáner
+        require_once dirname(__DIR__) . '/views/inventory.php';
     }
 
     // NUEVO: Carga la vista del formulario HTML
