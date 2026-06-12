@@ -40,7 +40,7 @@
 
         <section class="actions">
             <input type="text" id="searchInput" placeholder="Buscar por código o nombre...">
-            <a href="index.php?controller=inventario&action=nuevo" class="btn-primary" style="text-decoration: none;">+ Nuevo Producto</a>+ Nuevo Producto</a>
+            <a href="index.php?controller=inventario&action=nuevo" class="btn-primary" style="text-decoration: none;">+ Nuevo Producto</a>
         </section>
 
         <table class="inventory-table">
