@@ -1,8 +1,7 @@
 <?php
-// Usamos la ruta directa desde la raíz del proyecto. 
-// Si en tu index.php definiste ROOT_PATH, puedes usar: require_once ROOT_PATH . 'config/db.php';
-require_once 'config/db.php';
-require_once 'models/Producto.php';
+// Usamos __DIR__ para retroceder una carpeta (salir de controllers) y entrar a config/db.php o models/
+require_once dirname(__DIR__) . '/config/db.php';
+require_once dirname(__DIR__) . '/models/Producto.php';
 
 class DashboardController {
     public function index() {
@@ -14,8 +13,8 @@ class DashboardController {
         $valorTotal = $productoModel->obtenerValorizacionTotal();
         $stmt_alertas = $productoModel->obtenerStockBajo();
 
-        // Cargamos la vista de forma limpia
-        require_once 'views/dashboard.php';
+        // Cargamos la vista usando también la ruta absoluta
+        require_once dirname(__DIR__) . '/views/dashboard.php';
     }
 }
 ?>
