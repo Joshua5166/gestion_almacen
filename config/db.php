@@ -10,7 +10,7 @@ class Database {
     public function __construct() {
         // Lee las variables de entorno de Vercel, si no existen usa valores por defecto locales
         $this->host = getenv('DB_HOST') ?: "localhost";
-        $this->port = getenv('DB_PORT') ?: "5432";
+        $this->port = getenv('DB_PORT') ?: "6543";
         $this->db_name = getenv('DB_NAME') ?: "postgres";
         $this->username = getenv('DB_USER') ?: "postgres";
         $this->password = getenv('DB_PASSWORD') ?: "";
