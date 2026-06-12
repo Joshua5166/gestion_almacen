@@ -1,11 +1,20 @@
 <?php
 class Database {
-    private $host = "db.xgmrdapzbtdyiqjdbejk.supabase.co"; 
-    private $port = "5432"; 
-    private $db_name = "postgres";
-    private $username = "postgres"; 
-    private $password = "VPFKCj6KQg8seIRc"; 
+    private $host; 
+    private $port; 
+    private $db_name;
+    private $username; 
+    private $password; 
     public $conn;
+
+    public function __construct() {
+        // Lee las variables de entorno de Vercel, si no existen usa valores por defecto locales
+        $this->host = getenv('DB_HOST') ?: "localhost";
+        $this->port = getenv('DB_PORT') ?: "5432";
+        $this->db_name = getenv('DB_NAME') ?: "postgres";
+        $this->username = getenv('DB_USER') ?: "postgres";
+        $this->password = getenv('DB_PASSWORD') ?: "";
+    }
 
     public function getConnection() {
         $this->conn = null;
