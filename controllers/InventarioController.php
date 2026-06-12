@@ -1,6 +1,7 @@
 <?php
 require_once dirname(__DIR__) . '/config/db.php';
 require_once dirname(__DIR__) . '/models/Producto.php';
+
 class InventarioController {
     
     // Carga la tabla principal
@@ -10,12 +11,14 @@ class InventarioController {
         $productoModel = new Producto($db);
         
         $stmt_productos = $productoModel->obtenerTodos();
-        require_once 'views/inventory.php';
+        // CORREGIDO: Usamos ruta absoluta y apuntamos a 'inventario.php' (en español, como está en tus carpetas)
+        require_once dirname(__DIR__) . '/views/inventario.php';
     }
 
     // NUEVO: Carga la vista del formulario HTML
     public function nuevo() {
-        require_once 'views/nuevo.php';
+        // CORREGIDO: Ruta absoluta para el formulario de inserción
+        require_once dirname(__DIR__) . '/views/nuevo.php';
     }
 
     // NUEVO: Recibe los datos del formulario (POST) y los guarda en la BD
@@ -35,7 +38,6 @@ class InventarioController {
             );
 
             if ($creado) {
-                // Si se guardó correctamente, redirigir a la tabla de inventario
                 header("Location: index.php?controller=inventario&action=index");
                 exit();
             } else {
@@ -43,6 +45,7 @@ class InventarioController {
             }
         }
     }
+
     // Carga la vista del formulario con los datos actuales del producto
     public function editar() {
         if (isset($_GET['id'])) {
@@ -50,9 +53,9 @@ class InventarioController {
             $db = $database->getConnection();
             $productoModel = new Producto($db);
             
-            // Obtenemos los datos y los mandamos a la vista
             $producto = $productoModel->obtenerPorId($_GET['id']);
-            require_once 'views/editar.php';
+            // CORREGIDO: Ruta absoluta para el formulario de edición
+            require_once dirname(__DIR__) . '/views/editar.php';
         } else {
             header("Location: index.php?controller=inventario&action=index");
         }
