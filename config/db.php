@@ -12,7 +12,7 @@ class Database {
             $port = "5432";
             $dbname = "neondb"; // Neon nombra tu base de datos inicial como 'neondb' por defecto
             $username = "neondb_owner";
-            $password = "npg_VkrHmx5W3Ij"; // Haz clic en 'Show password' en Neon y pégala aquí
+            $password = "npg_VkrHmx5W3Ijv"; // Haz clic en 'Show password' en Neon y pégala aquí
 
             // DSN estándar para PostgreSQL en Neon con SSL requerido obligatorio
             $dsn = "pgsql:host=$host;port=$port;dbname=$dbname;sslmode=require";
