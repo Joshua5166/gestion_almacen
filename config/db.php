@@ -12,13 +12,13 @@ class Database {
     private $password = "VPFKCj6KQg8seIRc";
     public $conn;
 
-    public function getConnection() {
+public function getConnection() {
         $this->conn = null;
         try {
-            // Construimos el DSN apuntando a la IP y puerto del Pooler
-            $dsn = "pgsql:host=" . $this->host . ";port=" . $this->port . ";dbname=" . $this->db_name;
+            // PLAN B: Forzar el tenant_id dentro del string si el usuario con punto falla
+            $dsn = "pgsql:host=44.216.29.125;port=6543;dbname=gestion_almacen;user=postgres;password=VPFKCj6KQg8seIRc;options='--project=xgmrdapzbtdyiqjdbejk'";
             
-            $this->conn = new PDO($dsn, $this->username, $this->password);
+            $this->conn = new PDO($dsn);
             $this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         } catch(PDOException $exception) {
             echo "Error de conexión: " . $exception->getMessage();
