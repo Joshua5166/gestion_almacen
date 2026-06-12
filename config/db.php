@@ -1,24 +1,25 @@
 <?php
 class Database {
-    // EL TRUCO DEFINITIVO: Usamos el host directo real que sí tiene récord DNS IPv4 válido
+    // 1. Mantenemos la IP física que sí saltó el bloqueo de Vercel
     private $host = "44.208.221.186"; 
     private $port = "5432";                       
-    private $db_name = "postgres";
-    private $username = "postgres";               
+    
+    // 2. ¡EL CAMBIO GANADOR REAL!: Cambiamos al nombre correcto de tu captura
+    private $db_name = "gestion_almacen";
+    
+    // 3. El usuario con el TenantID para que la IP sepa a qué proyecto entrar
+    private $username = "postgres.xgmrdapzbtdyiqjdbejk";               
     private $password = "VPFKCj6KQg8seIRc";
     public $conn;
 
     public function getConnection() {
         $this->conn = null;
         try {
-            // Forzamos a PDO a usar IPv4 de manera estricta añadiendo parámetros de resolución en el DSN
-            $dsn = "pgsql:host=" . $this->host . ";port=" . $this->port . ";dbname=" . $this->db_name . ";sslmode=disable";
+            // DSN con la base de datos real: gestion_almacen
+            $dsn = "pgsql:host=" . $this->host . ";port=" . $this->port . ";dbname=" . $this->db_name;
             
-            // Creamos la conexión con un timeout de red por si el servidor tarda en responder
-            $this->conn = new PDO($dsn, $this->username, $this->password, [
-                PDO::ATTR_TIMEOUT => 5,
-                PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
-            ]);
+            $this->conn = new PDO($dsn, $this->username, $this->password);
+            $this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         } catch(PDOException $exception) {
             echo "Error de conexión: " . $exception->getMessage();
         }
