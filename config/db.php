@@ -13,7 +13,7 @@ class Database {
         $this->port = getenv('DB_PORT') ?: "6543";
         $this->db_name = getenv('DB_NAME') ?: "postgres";
         $this->username = getenv('DB_USER') ?: "postgres";
-        $this->password = getenv('DB_PASSWORD') ?: "";
+        $this->password = getenv('DB_PASSWORD') ?: "VPFKCj6KQg8seIRc";
     }
 
     public function getConnection() {
