@@ -1,13 +1,13 @@
 <?php
 class Database {
-    // 1. Mantenemos la IP física que sí saltó el bloqueo de Vercel
-    private $host = "44.208.221.186"; 
-    private $port = "5432";                       
+    // 1. Usamos la IP del Pooler de Supabase
+    private $host = "44.216.29.125"; 
+    private $port = "6543"; // ¡OBLIGATORIO puerto 6543 para el Pooler!
     
-    // 2. ¡EL CAMBIO GANADOR REAL!: Cambiamos al nombre correcto de tu captura
+    // 2. Tu base de datos corregida (gracias a tu genial vista de águila)
     private $db_name = "gestion_almacen";
     
-    // 3. El usuario con el TenantID para que la IP sepa a qué proyecto entrar
+    // 3. El formato de usuario que el Pooler exige en modo transacción
     private $username = "postgres.xgmrdapzbtdyiqjdbejk";               
     private $password = "VPFKCj6KQg8seIRc";
     public $conn;
@@ -15,7 +15,7 @@ class Database {
     public function getConnection() {
         $this->conn = null;
         try {
-            // DSN con la base de datos real: gestion_almacen
+            // Construimos el DSN apuntando a la IP y puerto del Pooler
             $dsn = "pgsql:host=" . $this->host . ";port=" . $this->port . ";dbname=" . $this->db_name;
             
             $this->conn = new PDO($dsn, $this->username, $this->password);
