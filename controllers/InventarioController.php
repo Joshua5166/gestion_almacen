@@ -11,8 +11,16 @@ class InventarioController {
         $productoModel = new Producto($db);
         
         $stmt_productos = $productoModel->obtenerTodos();
-        // CORREGIDO: Usamos ruta absoluta y apuntamos a 'inventario.php' (en español, como está en tus carpetas)
-        require_once dirname(__DIR__) . '/views/inventario.php';
+        
+        // Creamos las dos posibles rutas absolutas (por culpa del comportamiento de Git)
+        $ruta_minuscula = dirname(__DIR__) . '/views/inventario.php';
+        $ruta_mayuscula = dirname(__DIR__) . '/views/Inventario.php';
+
+        if (file_exists($ruta_minuscula)) {
+            require_once $ruta_minuscula;
+        } else {
+            require_once $ruta_mayuscula;
+        }
     }
 
     // NUEVO: Carga la vista del formulario HTML
