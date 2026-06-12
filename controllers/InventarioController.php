@@ -5,22 +5,32 @@ require_once dirname(__DIR__) . '/models/Producto.php';
 class InventarioController {
     
     // Carga la tabla principal
-    public function index() {
+public function index() {
         $database = new Database();
         $db = $database->getConnection();
         $productoModel = new Producto($db);
         
         $stmt_productos = $productoModel->obtenerTodos();
         
-        // Creamos las dos posibles rutas absolutas (por culpa del comportamiento de Git)
-        $ruta_minuscula = dirname(__DIR__) . '/views/inventario.php';
-        $ruta_mayuscula = dirname(__DIR__) . '/views/Inventario.php';
-
-        if (file_exists($ruta_minuscula)) {
-            require_once $ruta_minuscula;
+        // --- BLOQUE DE DIAGNÓSTICO EN VIVO ---
+        $directorio_views = dirname(__DIR__) . '/views';
+        echo "<div style='background:#2c3e50; color:#fff; padding:20px; font-family:monospace; margin:20px; border-radius:8px;'>";
+        echo "<h3>[Diagnóstico Vercel] Escaneando la carpeta views:</h3>";
+        if (is_dir($directorio_views)) {
+            $archivos = scandir($directorio_views);
+            echo "<ul>";
+            foreach ($archivos as $archivo) {
+                if ($archivo !== '.' && $archivo !== '..') {
+                    echo "<li>📄 <strong>" . $archivo . "</strong></li>";
+                }
+            }
+            echo "</ul>";
         } else {
-            require_once $ruta_mayuscula;
+            echo "❌ La carpeta 'views' no existe en la ruta absoluta: " . $directorio_views;
         }
+        echo "</div>";
+        exit(); // Detenemos la ejecución aquí para leer el diagnóstico
+        // --------------------------------------
     }
 
     // NUEVO: Carga la vista del formulario HTML
