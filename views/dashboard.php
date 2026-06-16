@@ -2,57 +2,57 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard - Gestión de Almacén</title>
-    <link rel="stylesheet" href="/assets/css/style.css">
     <style>
-        /* Estructura Base para evitar el colapso sin CSS */
-        body { display: flex; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; background-color: #f4f6f9; color: #333; }
-        
-        /* Sidebar Estilizada */
-        .sidebar { width: 250px; background-color: #2c3e50; color: white; min-height: 100vh; padding: 20px; box-sizing: border-box; }
-        .sidebar h2 { font-size: 1.4rem; border-bottom: 2px solid #34495e; padding-bottom: 15px; margin-top: 0; text-align: center; }
-        .sidebar ul { list-style: none; padding: 0; margin: 20px 0; }
-        .sidebar ul li { margin-bottom: 15px; }
-        .sidebar ul li a { color: #ecf0f1; text-decoration: none; display: block; padding: 10px 15px; border-radius: 4px; transition: background 0.3s; }
-        .sidebar ul li a:hover { background-color: #34495e; }
-        
-        /* Contenido Principal */
-        .main-content { flex: 1; padding: 40px; box-sizing: border-box; }
-        header h1 { margin-top: 0; color: #2c3e50; font-size: 1.8rem; border-bottom: 2px solid #bdc3c7; padding-bottom: 10px; }
-        
-        /* Contenedores de Tarjetas (Cards) */
-        .cards-container { display: flex; gap: 20px; margin-bottom: 30px; margin-top: 20px; }
-        .card { background: white; padding: 25px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); flex: 1; text-align: center; border-top: 4px solid #3498db; }
-        .card:last-child { border-top-color: #27ae60; }
-        .card h3 { color: #7f8c8d; font-size: 0.95rem; margin: 0 0 10px 0; text-transform: uppercase; letter-spacing: 0.5px; }
+        /* Tu CSS Estructural Original */
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { display: flex; height: 100vh; background-color: #f4f7f6; }
+
+        .sidebar { width: 250px; background-color: #2c3e50; color: white; padding: 20px; }
+        .sidebar h2 { margin-bottom: 30px; font-size: 1.5rem; text-align: center; }
+        .sidebar ul { list-style: none; }
+        .sidebar ul li a { color: #bdc3c7; text-decoration: none; display: block; padding: 12px; border-radius: 5px; margin-bottom: 5px; }
+        .sidebar ul li a:hover, .sidebar ul li a.active { background-color: #34495e; color: white; }
+
+        .main-content { flex: 1; padding: 30px; overflow-y: auto; }
+        header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
+        h1 { color: #333; }
+
+        /* Estilos específicos de las tarjetas del Dashboard */
+        .cards-container { display: flex; gap: 20px; margin-bottom: 30px; }
+        .card { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); flex: 1; text-align: center; }
+        .card h3 { color: #7f8c8d; font-size: 1rem; margin-bottom: 10px; }
         .card .valor { font-size: 2rem; color: #2c3e50; font-weight: bold; }
+
+        /* Estilos de la tabla de inventario y alertas */
+        .inventory-table { width: 100%; border-collapse: collapse; background: white; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+        .inventory-table th, .inventory-table td { padding: 15px; text-align: left; border-bottom: 1px solid #ddd; }
+        .inventory-table th { background-color: #f8f9f9; color: #333; }
         
-        /* Tablas de Inventario */
-        .inventory-table { width: 100%; border-collapse: collapse; background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.05); margin-top: 15px; }
-        .inventory-table th, .inventory-table td { padding: 12px 15px; text-align: left; border-bottom: 1px solid #edf2f7; }
-        .inventory-table th { font-weight: 600; text-transform: uppercase; font-size: 0.85rem; letter-spacing: 0.5px; }
-        .alert-table th { background-color: #e74c3c; color: white; }
-        .inventory-table tbody tr:hover { background-color: #f8fafc; }
+        /* Cabecera roja para la tabla de stock bajo */
+        .alert-table th { background-color: #e74c3c; color: white; font-weight: 600; text-transform: uppercase; font-size: 0.85rem; }
+        .inventory-table tbody tr:hover { background-color: #fcfcfc; }
     </style>
 </head>
 <body>
     <div class="sidebar">
         <h2>Panel de Control</h2>
         <ul>
-            <li><a href="index.php?controller=dashboard&action=index">Dashboard</a></li>
+            <li><a href="index.php?controller=dashboard&action=index" class="active">Dashboard</a></li>
             <li><a href="index.php?controller=inventario&action=index">Inventario</a></li>
+            
             <li>
-                <a href="#" onclick="alert('El módulo de Movimientos está en construcción.'); return false;" style="color: #95a5a6;">
+                <a href="#" onclick="alert('El módulo de Movimientos está en construcción.'); return false;" style="color: #7f8c8d;">
                     Movimientos
                 </a>
             </li>
             <li>
-                <a href="#" onclick="alert('La API de Reportes está programada para la semana del 11 de junio.'); return false;" style="color: #95a5a6;">
-                    Reportes
-                </a>
+                <a href="index.php?controller=reportes&action=index">Reportes</a>
             </li>
+            
             <li style="margin-top: 40px;">
-                <a href="index.php?controller=auth&action=logout" style="color: #e74c3c; font-weight: bold; border: 1px solid #e74c3c; text-align: center;">
+                <a href="index.php?controller=auth&action=logout" style="color: #e74c3c; font-weight: bold;">
                     Cerrar Sesión
                 </a>
             </li>
@@ -75,8 +75,8 @@
             </div>
         </div>
 
-        <h2 style="color: #2c3e50; font-size: 1.4rem; margin-top: 40px;">Alertas de Stock Bajo</h2>
-        <table class="inventory-table alert-table">
+        <h2>Alertas de Stock Bajo</h2>
+        <table class="inventory-table alert-table" style="margin-top: 15px;">
             <thead>
                 <tr>
                     <th>Código</th>
@@ -87,12 +87,12 @@
             </thead>
             <tbody>
                 <?php
-                if($stmt_alertas->rowCount() > 0) {
+                if(isset($stmt_alertas) && $stmt_alertas->rowCount() > 0) {
                     while ($row = $stmt_alertas->fetch(PDO::FETCH_ASSOC)) {
                         echo "<tr>";
                         echo "<td>{$row['codigo_serie']}</td>";
                         echo "<td>{$row['nombre']}</td>";
-                        echo "<td style='color: #e74c3c; font-weight: bold;'>{$row['stock_actual']}</td>";
+                        echo "<td style='color: #c0392b; font-weight: bold;'>{$row['stock_actual']}</td>";
                         echo "<td>{$row['stock_minimo']}</td>";
                         echo "</tr>";
                     }
