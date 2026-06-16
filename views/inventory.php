@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard - Gestión de Almacén</title>
+    <title>Gestión de Almacén - Inventario</title>
     
     <?php require_once dirname(__DIR__) . '/views/header_css.php'; ?>
 </head>
@@ -19,8 +19,8 @@
     <div class="sidebar">
         <h2>Panel de Control</h2>
         <ul>
-            <li><a href="index.php?controller=dashboard&action=index" class="active">Dashboard</a></li>
-            <li><a href="index.php?controller=inventario&action=index">Inventario</a></li>
+            <li><a href="index.php?controller=dashboard&action=index">Dashboard</a></li>
+            <li><a href="index.php?controller=inventario&action=index" class="active">Inventario</a></li>
             <li>
                 <a href="#" onclick="alert('El módulo de Movimientos está en construcción.'); return false;" style="color: #7f8c8d;">
                     Movimientos
@@ -37,49 +37,70 @@
 
     <div class="main-content">
         <header>
-            <h1>Resumen del Almacén</h1>
+            <h1>Control de Stock: Equipo de Cómputo</h1>
         </header>
 
-        <div class="cards-container">
-            <div class="card">
-                <h3>Valorización Total del Stock</h3>
-               <div class="valor">$<?php echo number_format($valorTotal ?? 0, 2); ?> MXN</div>
-            </div>
-            <div class="card">
-                <h3>Estado General</h3>
-                <div class="valor" style="color: #27ae60;">Operativo</div>
-            </div>
-        </div>
+        <section class="actions">
+            <input type="text" id="searchInput" placeholder="Buscar por código o nombre...">
+            <a href="index.php?controller=inventario&action=nuevo" class="btn-primary" style="text-decoration: none;">+ Nuevo Producto</a>
+        </section>
 
-        <h2>Alertas de Stock Bajo</h2>
-        <div class="table-responsive" style="margin-top: 15px;">
-            <table class="inventory-table alert-table">
+        <div class="table-responsive">
+            <table class="inventory-table">
                 <thead>
                     <tr>
                         <th>Código</th>
                         <th>Producto</th>
+                        <th>Categoría</th>
                         <th>Stock Actual</th>
                         <th>Stock Mínimo</th>
+                        <th>Acciones</th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody id="tablaProductos">
                     <?php
-                    if(isset($stmt_alertas) && $stmt_alertas->rowCount() > 0) {
-                        while ($row = $stmt_alertas->fetch(PDO::FETCH_ASSOC)) {
+                    if(isset($stmt_productos) && $stmt_productos->rowCount() > 0) {
+                        while ($row = $stmt_productos->fetch(PDO::FETCH_ASSOC)) {
+                            extract($row);
+                            
+                            $clase_stock = ($stock_actual <= $stock_minimo) ? 'style="color: #c0392b; font-weight: bold;"' : 'class="stock-ok"';
+                            
                             echo "<tr>";
-                            echo "<td>{$row['codigo_serie']}</td>";
-                            echo "<td>{$row['nombre']}</td>";
-                            echo "<td style='color: #c0392b; font-weight: bold;'>{$row['stock_actual']}</td>";
-                            echo "<td>{$row['stock_minimo']}</td>";
+                            echo "<td>{$codigo_serie}</td>";
+                            echo "<td>{$nombre}</td>";
+                            echo "<td>{$categoria}</td>";
+                            echo "<td {$clase_stock}>{$stock_actual}</td>";
+                            echo "<td>{$stock_minimo}</td>";
+                            echo "<td>
+                                    <a href='index.php?controller=inventario&action=editar&id={$id}' class='btn-edit'>Editar</a>
+                                    <a href='index.php?controller=inventario&action=eliminar&id={$id}' class='btn-delete' onclick='return confirm(\"¿Estás seguro de que deseas eliminar este producto?\");'>Eliminar</a>
+                                  </td>";
                             echo "</tr>";
                         }
                     } else {
-                        echo "<tr><td colspan='4' style='text-align:center; color: #7f8c8d;'>No hay alertas. El stock está saludable.</td></tr>";
+                        echo "<tr><td colspan='6' style='text-align:center; color: #7f8c8d;'>No hay productos registrados en el almacén.</td></tr>";
                     }
                     ?>
                 </tbody>
             </table>
         </div>
     </div>
+
+    <script>
+        document.getElementById('searchInput').addEventListener('keyup', function() {
+            let filter = this.value.toLowerCase();
+            let rows = document.querySelectorAll('#tablaProductos tr');
+            
+            rows.forEach(row => {
+                let codigo = row.cells[0] ? row.cells[0].textContent.toLowerCase() : '';
+                let nombre = row.cells[1] ? row.cells[1].textContent.toLowerCase() : '';
+                if (codigo.includes(filter) || nombre.includes(filter)) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        });
+    </script>
 </body>
 </html>
