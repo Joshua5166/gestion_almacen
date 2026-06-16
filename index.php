@@ -2,23 +2,22 @@
 // 1. Iniciar sesión para mantener el control de acceso y roles
 session_start();
 
-// 2. Incluir el archivo de conexión a la base de datos (Ruta raíz original)
-//require_once 'config/database.php';
+// 2. Definir e incluir la ruta absoluta indestructible para Vercel
 if (!defined('ROOT_PATH')) {
     define('ROOT_PATH', __DIR__ . '/');
 }
 require_once ROOT_PATH . 'config/db.php';
+
 // 3. Capturar el controlador y la acción desde la URL (por método GET)
-// Si no hay ninguno, por defecto mandamos al usuario al login
 $controller = isset($_GET['controller']) ? $_GET['controller'] : 'auth';
 $action = isset($_GET['action']) ? $_GET['action'] : 'login';
 
-// 4. Enrutador básico (Switch)
+// 4. Enrutador básico (Switch) blindado con ROOT_PATH
 switch ($controller) {
     
     // --- MÓDULO DE AUTENTICACIÓN ---
     case 'auth':
-        require_once 'controllers/AuthController.php';
+        require_once ROOT_PATH . 'controllers/AuthController.php';
         $authController = new AuthController();
         
         if ($action == 'login') {
@@ -36,7 +35,7 @@ switch ($controller) {
             header("Location: index.php?controller=auth&action=login");
             exit();
         }
-        require_once 'controllers/DashboardController.php';
+        require_once ROOT_PATH . 'controllers/DashboardController.php';
         $dashboardController = new DashboardController();
         $dashboardController->index();
         break;
@@ -49,7 +48,7 @@ switch ($controller) {
             exit();
         }
         
-        require_once 'controllers/InventarioController.php';
+        require_once ROOT_PATH . 'controllers/InventarioController.php';
         $inventarioController = new InventarioController();
         
         if ($action == 'index') {
@@ -66,6 +65,30 @@ switch ($controller) {
             $inventarioController->eliminar();
         } else {
             echo "Acción no válida en inventario.";
+        }
+        break;
+
+    // --- API DE REPORTES (Avance del módulo incorporado) ---
+    case 'reportes':
+        // Protección de seguridad para la API
+        if (!isset($_SESSION['usuario_id'])) {
+            header('HTTP/1.0 403 Forbidden');
+            header('Content-Type: application/json');
+            echo json_encode(["error" => "Acceso denegado. Inicia sesión primero."]);
+            exit();
+        }
+        
+        // CORREGIDO: Se añade ROOT_PATH para evitar errores serverless
+        require_once ROOT_PATH . 'controllers/ReportesController.php';
+        $reportesController = new ReportesController();
+        
+        if ($action == 'apiStock') {
+            $reportesController->apiStock();
+        } elseif ($action == 'index') {
+            $reportesController->index(); 
+        } else {
+            header('Content-Type: application/json');
+            echo json_encode(["error" => "Endpoint no válido en la API."]);
         }
         break;
 
