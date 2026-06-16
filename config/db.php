@@ -1,29 +1,49 @@
 <?php
-// CORREGIDO: session_start() eliminado. Se controla globalmente desde el index.php.
+// CORREGIDO: Sin session_start() ni texto directo para evitar el error de cabeceras en Vercel
 
 class Database {
-    // Ajusta estas credenciales con tus variables de entorno o datos de Neon
-    private $host = "ep-cool-shadow-a5abcde.us-east-1.aws.neon.tech"; 
-    private $db_name = "gestion_almacen";
-    private $username = "neondb_owner";
-    private $password = "tu_password_secreto";
     public $conn;
 
     public function getConnection() {
         $this->conn = null;
+        
+        // 1. Intentamos leer la URL completa de Vercel (Recomendado)
+        $db_url = getenv('DATABASE_URL');
+
         try {
-            // Habilitamos SSL obligatorio para la infraestructura de Neon
-            $this->conn = new PDO(
-                "mysql:host=" . $this->host . ";dbname=" . $this->db_name . ";charset=utf8",
-                $this->username,
-                $this->password,
-                [PDO::MYSQL_ATTR_SSL_CA => true]
-            );
+            if ($db_url) {
+                // Limpiamos el prefijo postgresql:// por pgsql:// para que PDO lo entienda
+                $db_url = str_replace("postgresql://", "pgsql://", $db_url);
+                
+                $dbparts = parse_url($db_url);
+
+                $host = $dbparts['host'];
+                $port = $dbparts['port'] ?? 5432;
+                $dbname = ltrim($dbparts['path'], '/');
+                $username = $dbparts['user'];
+                $password = $dbparts['pass'];
+
+                // Neon requiere sslmode=require de forma obligatoria
+                $dsn = "pgsql:host=$host;port=$port;dbname=$dbname;sslmode=require";
+                $this->conn = new PDO($dsn, $username, $password);
+            } else {
+                // 2. RESPALDO: Si no encuentra variable de entorno, usa tus datos locales/estáticos de Neon
+                $host = "ep-patient-sky-atucuhoo-pooler.c-9.us-east-1.aws.neon.tech";
+                $port = "5432";
+                $dbname = "neondb"; 
+                $username = "neondb_owner";
+                $password = "npg_VkrHmx5W3Ijv"; 
+
+                $dsn = "pgsql:host=$host;port=$port;dbname=$dbname;sslmode=require";
+                $this->conn = new PDO($dsn, $username, $password);
+            }
+
             $this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            
         } catch(PDOException $exception) {
-            header('Content-Type: application/json');
-            echo json_encode(["error" => "Error de conexión: " . $exception->getMessage()]);
-            exit();
+            // CORREGIDO: Retornamos el error de forma silenciosa o controlada para no romper las cabeceras del login
+            error_log("Error de conexión: " . $exception->getMessage());
+            return null;
         }
         return $this->conn;
     }
