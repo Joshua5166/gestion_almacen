@@ -43,7 +43,7 @@
         <div class="cards-container">
             <div class="card">
                 <h3>Valorización Total del Stock</h3>
-                <div class="valor">$<?php echo number_format($valorTotal, 2); ?> MXN</div>
+               <div class="valor">$<?php echo number_format($valorTotal ?? 0, 2); ?> MXN</div>
             </div>
             <div class="card">
                 <h3>Estado General</h3>
