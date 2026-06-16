@@ -72,16 +72,21 @@
             const tbody = document.getElementById('tablaReporte');
             tbody.innerHTML = '<tr><td colspan="6" style="text-align: center;">Cargando datos desde la API...</td></tr>';
 
+            // Petición AJAX limpia dirigida al enrutador central
             fetch('index.php?controller=reportes&action=apiStock')
-                .then(response => response.json())
+                .then(response => {
+                    if (!response.ok) throw new Error('Error en la respuesta del servidor');
+                    return response.json();
+                })
                 .then(data => {
-                    tbody.innerHTML = '';
+                    tbody.innerHTML = ''; 
                     
                     if(!data || data.error || data.length === 0) {
                         tbody.innerHTML = '<tr><td colspan="6" style="text-align: center;">No hay productos registrados o acceso denegado.</td></tr>';
                         return;
                     }
 
+                    // Iteramos sobre la respuesta JSON enviada por ReportesController
                     data.forEach(producto => {
                         const stock = parseInt(producto.stock_actual);
                         const precio = parseFloat(producto.precio);
@@ -105,6 +110,7 @@
                 });
         }
 
+        // Carga inicial automática
         document.addEventListener('DOMContentLoaded', cargarReporte);
     </script>
 </body>
