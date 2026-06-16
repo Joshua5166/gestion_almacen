@@ -5,24 +5,22 @@ require_once dirname(__DIR__) . '/models/Producto.php';
 class InventarioController {
     
     // Carga la tabla principal
-public function index() {
+    public function index() {
         $database = new Database();
         $db = $database->getConnection();
         $productoModel = new Producto($db);
         
         $stmt_productos = $productoModel->obtenerTodos();
         
-        // Apuntamos directo al nombre real detectado por el escáner
         require_once dirname(__DIR__) . '/views/inventory.php';
     }
 
-    // NUEVO: Carga la vista del formulario HTML
+    // Carga la vista del formulario HTML
     public function nuevo() {
-        // CORREGIDO: Ruta absoluta para el formulario de inserción
         require_once dirname(__DIR__) . '/views/nuevo.php';
     }
 
-    // NUEVO: Recibe los datos del formulario (POST) y los guarda en la BD
+    // Recibe los datos del formulario (POST) y los guarda en la BD
     public function guardar() {
         if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $database = new Database();
@@ -55,7 +53,6 @@ public function index() {
             $productoModel = new Producto($db);
             
             $producto = $productoModel->obtenerPorId($_GET['id']);
-            // CORREGIDO: Ruta absoluta para el formulario de edición
             require_once dirname(__DIR__) . '/views/editar.php';
         } else {
             header("Location: index.php?controller=inventario&action=index");
