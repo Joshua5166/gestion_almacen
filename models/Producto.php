@@ -16,7 +16,7 @@ class Producto {
         return $stmt;
     }
 
-    // NUEVO: Método para registrar un nuevo producto
+    // CORREGIDO: Método para registrar un nuevo producto sin errores de referencia
     public function crear($codigo, $nombre, $categoria, $stock_actual, $stock_minimo, $precio) {
         $query = "INSERT INTO " . $this->table_name . " 
                   (codigo_serie, nombre, categoria, stock_actual, stock_minimo, precio) 
@@ -24,10 +24,15 @@ class Producto {
         
         $stmt = $this->conn->prepare($query);
 
-        // Limpiar datos y vincular parámetros (Evita Inyección SQL)
-        $stmt->bindParam(":codigo", htmlspecialchars(strip_tags($codigo)));
-        $stmt->bindParam(":nombre", htmlspecialchars(strip_tags($nombre)));
-        $stmt->bindParam(":categoria", htmlspecialchars(strip_tags($categoria)));
+        // CORRECCIÓN: Guardamos el filtrado en variables limpias primero
+        $codigo_limpio = htmlspecialchars(strip_tags($codigo));
+        $nombre_limpio = htmlspecialchars(strip_tags($nombre));
+        $categoria_limpio = htmlspecialchars(strip_tags($categoria));
+
+        // Vinculamos usando exclusivamente variables reales
+        $stmt->bindParam(":codigo", $codigo_limpio);
+        $stmt->bindParam(":nombre", $nombre_limpio);
+        $stmt->bindParam(":categoria", $categoria_limpio);
         $stmt->bindParam(":stock_actual", $stock_actual);
         $stmt->bindParam(":stock_minimo", $stock_minimo);
         $stmt->bindParam(":precio", $precio);
@@ -48,7 +53,7 @@ class Producto {
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-    // Actualizar un producto existente
+    // CORREGIDO: Actualizar un producto existente limpiando variables previamente
     public function actualizar($id, $codigo, $nombre, $categoria, $stock_actual, $stock_minimo, $precio) {
         $query = "UPDATE " . $this->table_name . " 
                   SET codigo_serie = :codigo, nombre = :nombre, categoria = :categoria, 
@@ -57,10 +62,14 @@ class Producto {
         
         $stmt = $this->conn->prepare($query);
 
-        // Limpiar datos
-        $stmt->bindParam(":codigo", htmlspecialchars(strip_tags($codigo)));
-        $stmt->bindParam(":nombre", htmlspecialchars(strip_tags($nombre)));
-        $stmt->bindParam(":categoria", htmlspecialchars(strip_tags($categoria)));
+        // CORRECCIÓN: Guardamos el filtrado en variables limpias primero
+        $codigo_limpio = htmlspecialchars(strip_tags($codigo));
+        $nombre_limpio = htmlspecialchars(strip_tags($nombre));
+        $categoria_limpio = htmlspecialchars(strip_tags($categoria));
+
+        $stmt->bindParam(":codigo", $codigo_limpio);
+        $stmt->bindParam(":nombre", $nombre_limpio);
+        $stmt->bindParam(":categoria", $categoria_limpio);
         $stmt->bindParam(":stock_actual", $stock_actual);
         $stmt->bindParam(":stock_minimo", $stock_minimo);
         $stmt->bindParam(":precio", $precio);
@@ -77,6 +86,7 @@ class Producto {
         
         return $stmt->execute();
     }
+
     // Calcular el valor total del inventario (Stock * Precio)
     public function obtenerValorizacionTotal() {
         $query = "SELECT SUM(stock_actual * precio) as total_valor FROM " . $this->table_name;
