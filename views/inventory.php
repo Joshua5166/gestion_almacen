@@ -42,7 +42,7 @@
         <ul>
             <li><a href="index.php?controller=dashboard&action=index">Dashboard</a></li>
             <li><a href="index.php?controller=inventario&action=index" class="active">Inventario</a></li>
-            
+            <li><a href="index.php?controller=reportes&action=index">Reportes</a></li>
             <li>
                 <a href="#" onclick="alert('El módulo de Movimientos está en construcción.'); return false;" style="color: #7f8c8d;">
                     Movimientos
