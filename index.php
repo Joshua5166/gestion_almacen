@@ -67,7 +67,32 @@ switch ($controller) {
             echo "Acción no válida en inventario.";
         }
         break;
-
+// --- MÓDULO DE TRABAJADORES (Reemplaza Movimientos) ---
+    case 'trabajadores':
+        if (!isset($_SESSION['usuario_id'])) {
+            header("Location: index.php?controller=auth&action=login");
+            exit();
+        }
+        
+        require_once ROOT_PATH . 'controllers/TrabajadoresController.php';
+        $trabajadoresController = new TrabajadoresController();
+        
+        if ($action == 'index') {
+            $trabajadoresController->index(); 
+        } elseif ($action == 'nuevo') {
+            $trabajadoresController->nuevo(); 
+        } elseif ($action == 'guardar') {
+            $trabajadoresController->guardar();
+        } elseif ($action == 'editar') {
+            $trabajadoresController->editar();
+        } elseif ($action == 'actualizar') {
+            $trabajadoresController->actualizar();
+        } elseif ($action == 'eliminar') {
+            $trabajadoresController->eliminar();
+        } else {
+            echo "Acción no válida en plantilla de trabajadores.";
+        }
+        break;
     // --- API DE REPORTES (Avance del módulo incorporado) ---
     case 'reportes':
         // Protección de seguridad para la API
