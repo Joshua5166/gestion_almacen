@@ -21,17 +21,8 @@
         <ul>
             <li><a href="index.php?controller=dashboard&action=index">Dashboard</a></li>
             <li><a href="index.php?controller=inventario&action=index">Inventario</a></li>
-            
-            <li>
-                <a href="#" onclick="alert('El módulo de Movimientos está en construcción.'); return false;" style="color: #95a5a6;">
-                    Movimientos
-                </a>
-            </li>
-            <li>
-                <a href="#" onclick="alert('La API de Reportes está programada para la semana del 11 de junio.'); return false;" style="color: #95a5a6;">
-                    Reportes
-                </a>
-            </li>
+            <li><a href="index.php?controller=trabajadores&action=index">Trabajadores</a></li>
+            <li><a href="index.php?controller=reportes&action=index">Reportes</a></li>
             
             <li style="margin-top: 30px;">
                 <a href="index.php?controller=auth&action=logout" style="color: #e74c3c; font-weight: bold;">
