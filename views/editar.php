@@ -4,27 +4,27 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Editar Producto - Gestión de Almacén</title>
-    <link rel="stylesheet" href="assets/css/style.css">
-    <style>
-        .form-container { background: white; padding: 25px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); max-width: 600px; margin-top: 20px; }
-        .form-group { margin-bottom: 15px; }
-        .form-group label { display: block; font-weight: bold; margin-bottom: 5px; color: #333; }
-        .form-group input, .form-group select { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
-        .btn-warning { background-color: #f39c12; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; font-size: 1rem; }
-        .btn-warning:hover { background-color: #d68910; }
-        .btn-cancel { background-color: #7f8c8d; color: white; text-decoration: none; padding: 10px 20px; border-radius: 5px; font-size: 1rem; display: inline-block; margin-left: 10px;}
-    </style>
+    
+    <?php require_once dirname(__DIR__) . '/views/header_css.php'; ?>
 </head>
 <body>
-   <div class="sidebar">
+
+    <input type="checkbox" id="menu-toggle">
+
+    <div class="menu-bar-movil">
+        <span>Gestión de Almacén</span>
+        <label for="menu-toggle" class="menu-icon">&#9776;</label>
+    </div>
+
+    <div class="sidebar">
         <h2>Panel de Control</h2>
         <ul>
             <li><a href="index.php?controller=dashboard&action=index">Dashboard</a></li>
-            <li><a href="index.php?controller=inventario&action=index">Inventario</a></li>
+            <li><a href="index.php?controller=inventario&action=index" class="active">Inventario</a></li>
             <li><a href="index.php?controller=trabajadores&action=index">Trabajadores</a></li>
             <li><a href="index.php?controller=reportes&action=index">Reportes</a></li>
             
-            <li style="margin-top: 30px;">
+            <li style="margin-top: 40px;">
                 <a href="index.php?controller=auth&action=logout" style="color: #e74c3c; font-weight: bold;">
                     Cerrar Sesión
                 </a>
@@ -78,8 +78,8 @@
                     <input type="number" id="precio" name="precio" required min="0" step="0.01" value="<?php echo $producto['precio']; ?>">
                 </div>
 
-                <div style="margin-top: 20px;">
-                    <button type="submit" class="btn-warning">Actualizar Producto</button>
+                <div style="margin-top: 25px;">
+                    <button type="submit" class="btn-edit" style="font-size: 1rem; padding: 10px 20px; border-radius: 5px;">Actualizar Producto</button>
                     <a href="index.php?controller=inventario&action=index" class="btn-cancel">Cancelar</a>
                 </div>
             </form>
